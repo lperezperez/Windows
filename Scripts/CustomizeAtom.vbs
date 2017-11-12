@@ -1,11 +1,12 @@
 On Error Resume Next
 ' Copy icon if needed
-Sub CopyIconIfNeeded(destinationFilePath)
+Sub CopyIcon(sourceFolderPath, destinationFilePath)
     ' If the icon file not exist...
     If Not ScriptingFileSystemObject.FileExists(destinationFilePath) Then
     	' The icon path in source folder.
-    	sourceIconFilePath = ScriptingFileSystemObject.BuildPath(WScriptShell.CurrentDirectory, ScriptingFileSystemObject.GetFileName(destinationFilePath))
+    	sourceIconFilePath = ScriptingFileSystemObject.BuildPath(sourceFolderPath, ScriptingFileSystemObject.GetFileName(destinationFilePath))
     	' If the icon is stored in source path, then copy to the folder.
+        MsgBox sourceIconFilePath & vbCrLf & destinationFilePath
     	If ScriptingFileSystemObject.FileExists(sourceIconFilePath) Then
     		ScriptingFileSystemObject.CopyFile sourceIconFilePath, destinationFilePath, false
     	End If
@@ -77,13 +78,14 @@ customIconPath = customIconsFolderPath & "AtomMaterial.ico"
 ' The custom file icon path.
 customFileIconPath = customIconsFolderPath & "AtomFile.ico"
 Set ScriptingFileSystemObject = CreateObject("Scripting.FileSystemObject")
+iconsFolderPath = ScriptingFileSystemObject.BuildPath(ScriptingFileSystemObject.GetParentFolderName(ScriptingFileSystemObject.GetFile(Wscript.ScriptFullName)), "..\Icons")
 ' Copy custom icon if needed
-CopyIconIfNeeded customIconPath
+CopyIcon iconsFolderPath, customIconPath
 ' Copy custom file icon if needed
-CopyIconIfNeeded customFileIconPath
+CopyIcon iconsFolderPath, customFileIconPath
 ' Gets the Atom shortcut path.
 Set AtomShortcut = WScriptShell.CreateShortcut(WScriptShell.ExpandEnvironmentStrings("%AppData%") & "\Microsoft\Windows\Start Menu\Programs\GitHub, Inc\Atom.lnk")
-' If the custom icon exists.
+' If the custom icon exists set for application and menus
 If ScriptingFileSystemObject.FileExists(customIconPath) Then
 	WScriptShell.RegWrite "HKCR\*\OpenWithList\atom.exe\", Nothing
 	WScriptShell.RegWrite "HKCR\*\shell\Atom\Icon", customIconPath, "REG_SZ"
@@ -92,8 +94,8 @@ If ScriptingFileSystemObject.FileExists(customIconPath) Then
 	WScriptShell.RegWrite "HKCR\Directory\Background\shell\Atom", customIconPath, "REG_SZ"
 	WScriptShell.RegWrite "HKCR\Directory\shell\Atom\Icon", customIconPath, "REG_SZ"
 	WScriptShell.RegWrite "HKCR\*\shell\Atom\Icon", customIconPath, "REG_SZ"
-    SetIconShortcut AtomShortcut, customIconPath
-    SetIconShortcut WScriptShell.CreateShortcut(WScriptShell.ExpandEnvironmentStrings("%AppData%") & "\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar\Atom.lnk"), customIconPath
+    SetShortcutIcon AtomShortcut, customIconPath
+    SetShortcutIcon WScriptShell.CreateShortcut(WScriptShell.ExpandEnvironmentStrings("%AppData%") & "\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar\Atom.lnk"), customIconPath
 End If
 ' Get asar path.
 appAsarPath = AtomShortcut.WorkingDirectory & "\resources\app.asar"
