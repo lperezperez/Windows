@@ -6,7 +6,6 @@ Sub CopyIcon(sourceFolderPath, destinationFilePath)
     	' The icon path in source folder.
     	sourceIconFilePath = ScriptingFileSystemObject.BuildPath(sourceFolderPath, ScriptingFileSystemObject.GetFileName(destinationFilePath))
     	' If the icon is stored in source path, then copy to the folder.
-        MsgBox sourceIconFilePath & vbCrLf & destinationFilePath
     	If ScriptingFileSystemObject.FileExists(sourceIconFilePath) Then
     		ScriptingFileSystemObject.CopyFile sourceIconFilePath, destinationFilePath, false
     	End If
