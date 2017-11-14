@@ -23,7 +23,7 @@ Sub SetFolderIcon(folderPath, iconPath, infoTip)
     iconFileName = ScriptingFileSystemObject.GetFileName(iconPath)
     destinationIconFilePath = ScriptingFileSystemObject.BuildPath(folderPath, iconFileName)
     If Not ScriptingFileSystemObject.FileExists(destinationIconFilePath) Then
-        ScriptingFileSystemObject.CopyFile iconPath, destinationIconFilePath, false
+        ScriptingFileSystemObject.CopyFile iconPath, destinationIconFilePath, False
     End If
     ' Set icon file as hidden file
     SetFileAttribute destinationIconFilePath, 2
@@ -47,7 +47,7 @@ Set WScriptShell = WScript.CreateObject ("WScript.Shell")
 userFolder = WScriptShell.ExpandEnvironmentStrings("%UserProfile%")
 Set ScriptingFileSystemObject = CreateObject("Scripting.FileSystemObject")
 ' Get icons folder path
-iconsFolderPath = ScriptingFileSystemObject.BuildPath(ScriptingFileSystemObject.GetParentFolderName(ScriptingFileSystemObject.GetFile(Wscript.ScriptFullName)), "..\Icons")
+iconsFolderPath = ScriptingFileSystemObject.GetAbsolutePathName(ScriptingFileSystemObject.BuildPath(ScriptingFileSystemObject.GetParentFolderName(ScriptingFileSystemObject.GetFile(Wscript.ScriptFullName)), "..\Icons"))
 ' Set Source folder icon
 SetFolderIcon ScriptingFileSystemObject.BuildPath(userFolder, "Source"), ScriptingFileSystemObject.BuildPath(iconsFolderPath, "Source.ico"), "Contains source code"
 ' Set Repos folder icon

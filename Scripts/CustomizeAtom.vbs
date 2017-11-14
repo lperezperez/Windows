@@ -78,7 +78,7 @@ customIconPath = customIconsFolderPath & "AtomMaterial.ico"
 ' The custom file icon path.
 customFileIconPath = customIconsFolderPath & "AtomFile.ico"
 Set ScriptingFileSystemObject = CreateObject("Scripting.FileSystemObject")
-iconsFolderPath = ScriptingFileSystemObject.BuildPath(ScriptingFileSystemObject.GetParentFolderName(ScriptingFileSystemObject.GetFile(Wscript.ScriptFullName)), "..\Icons")
+iconsFolderPath = ScriptingFileSystemObject.GetAbsolutePathName(ScriptingFileSystemObject.BuildPath(ScriptingFileSystemObject.GetParentFolderName(ScriptingFileSystemObject.GetFile(Wscript.ScriptFullName)), "..\Icons"))
 ' Copy custom icon if needed
 CopyIcon iconsFolderPath, customIconPath
 ' Copy custom file icon if needed
