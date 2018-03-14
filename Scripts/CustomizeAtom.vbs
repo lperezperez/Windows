@@ -32,31 +32,25 @@ Sub EditAtomWindow(atomAppPath)
     lines = Split(AtomWindowFile.ReadAll, Chr(10))
     ' Close the file.
     AtomWindowFile.Close
+    ' Set loop flags
+    modified = False
+    inOptions = False
     ' Open the file for writing.
     Set AtomWindowFile = ScriptingFileSystemObject.OpenTextFile(atomWindowFilePath, 2, true)
     Set RegExp = CreateObject("VBScript.RegExp")
     RegExp.Pattern = "^[\t ]*options[\t ]*="
-    inOptions = false
     ' Loop through the lines looking for lines to keep.
     For line = LBound(lines) to UBound(lines)
-        If Not inOptions Then
-            AtomWindowFile.WriteLine(lines(line))
-            If RegExp.Test(lines(line)) Then
-                RegExp.Pattern = "^[\t ]*options[\t ]*=[\t ]*{"
+        AtomWindowFile.WriteLine(lines(line))
+        If Not modified Then
+            If Not inOptions Then
                 inOptions = RegExp.Test(lines(line))
-                If Not inOptions And line < UBound(lines) Then
-                    RegExp.Pattern = "^[\t ]*{"
-                    inOptions = RegExp.Test(lines(line + 1))
+            Else
+                regExp.Pattern = "title: 'Atom',"
+                If regExp.Test(lines(line)) Then
+                    AtomWindowFile.WriteLine(regExp.Replace(lines(line), "frame: false,"))
+                    modified = true
                 End If
-            End If
-        Else
-            regExp.Pattern = "^[\t ]*backgroundColor *:"
-            If Not regExp.Test(lines(line)) Then
-                AtomWindowFile.WriteLine(lines(line))
-            End If
-            regExp.Pattern = "title: 'Atom',"
-            If regExp.Test(lines(line)) Then
-                AtomWindowFile.WriteLine(regExp.Replace(lines(line), "frame: false,"))
             End If
         End If
     Next
@@ -69,7 +63,7 @@ If WScript.Arguments.length = 0 Then
 	CreateObject("Shell.Application").ShellExecute "WScript.exe", """" & WScript.ScriptFullName & """ UAC", "", "RunAs", 1
 	WScript.Quit
 End If
-Set WScriptShell = WScript.CreateObject ("WScript.Shell")
+Set WScriptShell = WScript.CreateObject("WScript.Shell")
 ' The icons folder
 customIconsFolderPath = WScriptShell.ExpandEnvironmentStrings("%LocalAppData%") & "\atom\"
 ' The custom icon path.
