@@ -63,7 +63,7 @@ If WScript.Arguments.length = 0 Then
 	CreateObject("Shell.Application").ShellExecute "WScript.exe", """" & WScript.ScriptFullName & """ UAC", "", "RunAs", 1
 	WScript.Quit
 End If
-Set WScriptShell = WScript.CreateObject ("WScript.Shell")
+Set WScriptShell = WScript.CreateObject("WScript.Shell")
 ' The icons folder
 customIconsFolderPath = WScriptShell.ExpandEnvironmentStrings("%LocalAppData%") & "\atom\"
 ' The custom icon path.
