@@ -143,7 +143,7 @@ namespace Windows.Shell
             for (var index = 0; index < 16; index++)
                 this.ColorTable[index] = (int)Registry.GetValue(RegistryKeyConsole, "ColorTable" + index.ToString("00"), 0);
             this.CursorSize = (int)Registry.GetValue(RegistryKeyConsole, "CursorSize", 25);
-            this.FaceName = Registry.GetValue(RegistryKeyConsole, "FaceName", "Inconsolata").ToString();
+            this.FaceName = Registry.GetValue(RegistryKeyConsole, "FaceName", "Fira Code Retina").ToString();
             this.Font = font;
             this.FontFamily = (int)Registry.GetValue(RegistryKeyConsole, "FontFamily", 54);
             this.FontSize = new Coord(0x180000);
@@ -231,7 +231,7 @@ namespace Windows.Shell
             Registry.SetValue(RegistryKeyConsole, "FontWeight", consoleProperties.FontWeight = 700);
             Registry.SetValue(RegistryKeyConsole, "HistoryBufferSize", consoleProperties.HistoryBufferSize = 80);
             consoleProperties.WindowSize.X = 80;
-            consoleProperties.WindowSize.Y = 24;
+            consoleProperties.WindowSize.Y = 25;
             // Save the Windows Link file.
             handleConsoleProperties = Marshal.AllocCoTaskMem(consoleProperties.Size);
             Marshal.StructureToPtr(consoleProperties, handleConsoleProperties, true);
