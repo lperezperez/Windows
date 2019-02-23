@@ -19,4 +19,5 @@ if (-Not (Test-Path -Path "$env:ProgramData\Chocolatey")) {
         $RefreshEnv
     }
 }
+& choco feature enable -n=allowGlobalConfirmation
 & choco install "..\Settings\packages.config"
