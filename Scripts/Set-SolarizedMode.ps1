@@ -18,6 +18,8 @@ param(
 )
 Add-Type -Path "$PSScriptRoot\Windows.Shell.cs" -ReferencedAssemblies System.Drawing
 foreach ($lnkFile in $LnkFiles) {
-    [Windows.Shell.Link]::SetSolarizedMode($Mode, $lnkFile)
-    Write-Host "Solarized $Mode applied to $lnkFile"
+    if (Test-Path $lnkFile) {
+        [Windows.Shell.Link]::SetSolarizedMode($Mode, $lnkFile)
+        Write-Host "Solarized $Mode applied to $lnkFile"
+    }
 }
