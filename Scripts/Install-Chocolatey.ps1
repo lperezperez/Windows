@@ -1,5 +1,5 @@
 # If not currently running "as Administrator"...
-if (-Not $(new-object System.Security.Principal.WindowsPrincipal([System.Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole([System.Security.Principal.WindowsBuiltInRole]::Administrator))
+if (-Not ([System.Security.Principal.WindowsPrincipal] [System.Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([System.Security.Principal.WindowsBuiltInRole]::Administrator))
 {
     # Starts a new PowerShell elevated process
     Start-Process -FilePath "PowerShell" -ArgumentList $MyInvocation.MyCommand.Definition -Verb runas
@@ -8,7 +8,7 @@ if (-Not $(new-object System.Security.Principal.WindowsPrincipal([System.Securit
 }
 # Create PowerShell profile.
 if (-Not (Test-Path $Profile)) {
-    New-item –type file –force $Profile
+    New-Item -ItemType File -Force $Profile
 }
 # Install Chocolatey
 if (-Not (Test-Path -Path "$env:ProgramData\Chocolatey")) {
