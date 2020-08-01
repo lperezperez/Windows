@@ -13,7 +13,12 @@
     Install-Font -Path folder
     Get all font files (recursively) from the specified folder and install in Windows.
 #>
-param([Parameter(Mandatory = $true)][ValidateScript({ Test-Path $_ })][string[]]$Path)
+param(
+    [Parameter(Mandatory = $true)]
+    [ValidateScript({ Test-Path $_ })]
+    [string[]]$Path,
+    [switch]$Force
+)
 begin
 {
     $Path = Resolve-Path $Path
@@ -119,20 +124,19 @@ process
         {
             $fontFilePath = Join-Path $FontsFolderPath $fontFile.Name # Destination font file path
             $fontRegistryEntry = $fontFile.BaseName + $FontFileTypes.item($fontFile.Extension) # Font registry entry
-            $fontRegistryEntryPath = Join-Path $FontsRegistryKey $fontRegistryEntry
             # Copy font file if destination path don't exists...
-            if (Test-Path $fontFilePath) { Write-Host "Font $fontRegistryEntry already in Windows fonts folder." -ForegroundColor Yellow }
-            else { Copy-Item $fontFile.FullName $fontFilePath }
+            if ((Test-Path $fontFilePath) -and !$Force) {
+                Write-Host "Font $fontRegistryEntry already in Windows fonts folder." -ForegroundColor Yellow
+                #continue
+            }
+            else { Copy-Item $fontFile.FullName $fontFilePath -Force }
             # Get Registry entry value
-            $fontRegistryEntryExists = Test-Path $fontRegistryEntryPath
-            $replaceFontRegistryEntry = $false
-            if ($fontRegistryEntryExists)
-            {
-                $fontFileInstalled = Get-ItemPropertyValue "$FontsRegistryKey" -Name "$fontRegistryEntry"
-                # If a font file is installed with another name...
-                if ($fontFileInstalled -ne $fontFile.Name)
+            $registerFont = $true
+            try {
+                $fontFileInstalled = Get-ItemPropertyValue $FontsRegistryKey -Name $fontRegistryEntry
+                if ($fontFileInstalled -eq $fontFile.Name) { $registerFont = $false }
+                else
                 {
-                    $replaceFontRegistryEntry = $true
                     # Unregister and remove the font file...
                     $replacedFontPath = Join-Path $FontsFolderPath $fontFileInstalled
                     if (Test-Path $replacedFontPath)
@@ -143,13 +147,14 @@ process
                             Write-Host "Font $fontRegistryEntry unregistered." -ForegroundColor Yellow
                         }
                         Remove-Item $replacedFontPath
-                        Write-Host "Font $fontRegistryEntry removed." -ForegroundColor Yellow
+                        Write-Host "Font $fontFileInstalled removed." -ForegroundColor Yellow
                     }
                 }
             }
-            # Install and register font file
-            if (-not $fontRegistryEntryExists -or $replaceFontRegistryEntry)
+            catch { }
+            if ($registerFont)
             {
+                # Install and register font file
                 Set-ItemProperty $FontsRegistryKey $fontRegistryEntry $fontFile.Name
                 Write-Host "Font $fontRegistryEntry installed." -ForegroundColor Green
                 if ([Fonts]::AddFontResource($fontFilePath) -eq 0) { Write-Host "Cannot register $fontRegistryEntry." -ForegroundColor Yellow }
