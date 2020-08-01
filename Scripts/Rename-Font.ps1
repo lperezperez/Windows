@@ -6,17 +6,31 @@
     The valid file extensions are: .fnt, .fon, .mmm, .otf, .pbf, .pfm, .ttc and .ttf
     .PARAMETER Path
     May be either the path to a font file or to a folder containing font files.
+    .PARAMETER Force
+    Overwrittes a previous installed font (if exists).
     .PARAMETER FromFont
     Indicates whether the name will be set from the font family name. If not specified, the name will be set from the extended file properties.
-    .EXAMPLE
-    Rename-Font -Path folder
-    Get all font files from the specified folder and renames using its extended file properties.
     .EXAMPLE
     Rename-Font -Path font
     Rename provided font using its extended file properties.
     .EXAMPLE
+    Rename-Font -Path font -Force
+    Rename provided font using its extended file properties and overwrittes the previous font file (if exists).
+    .EXAMPLE
+    Rename-Font -Path font -Force -FromFont
+    Rename provided font using its font family name and overwrittes the previous font file (if exists).
+    .EXAMPLE
+    Rename-Font -Path folder
+    Get all font files from the specified folder and renames using its extended file properties.
+    .EXAMPLE
+    Rename-Font -Path folder -Force
+    Get all font files from the specified folder, renames using its extended file properties and overwrittes the previous font file (if exists).
+    .EXAMPLE
     Rename-Font -Path folder -FromFont
     Get all font files from the specified folder and renames using its font family names.
+    .EXAMPLE
+    Rename-Font -Path folder -Force -FromFont
+    Get all font files from the specified folder, renames using its font family names and overwrittes the previous font file (if exists).
 #>
 [CmdletBinding(SupportsShouldProcess = $true)]
 param
@@ -25,6 +39,7 @@ param
     [Parameter(Mandatory = $true, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
     [ValidateScript({ Test-Path $_ })]
     [string[]]$Path,
+    [switch]$Force,
     [Alias('FromFont', 'FontName')]
     [switch]$FromFontName
 )
@@ -55,12 +70,18 @@ process
         if ($fontFile.BaseName -ne $fontName)
         {
             $newFontFile = $fontName + $fontFile.Extension
-            if (Test-Path (Join-Path $fontFile.DirectoryName $newFontFile)) { Write-Warning "$newFontFile already exists." }
-            else
-            { 
-                Rename-Item $fontFile.FullName $newFontFile
-                Write-Host "Font $($fontFile.Name) renamed to $newFontFile." -ForegroundColor Green
+            $newFontFilePath = Join-Path $fontFile.DirectoryName $newFontFile
+            if (Test-Path $newFontFilePath) {
+                if ($Force) {
+                    Remove-Item $newFontFilePath -Force
+                }
+                else {
+                    Write-Warning "$newFontFile already exists."
+                    continue
+                }
             }
+            Rename-Item $fontFile.FullName $newFontFile -Force
+            Write-Host "Font $($fontFile.Name) renamed to $newFontFile." -ForegroundColor Green
         }
     }
 }

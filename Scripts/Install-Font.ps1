@@ -6,12 +6,20 @@
     The valid file extensions are: .fnt, .fon, .otf, .ttc and .ttf
     .PARAMETER Path
     May be either the path to a font file or to a folder containing font files to install.
+    .PARAMETER Force
+    Overwrittes a previous installed font (if exists).
     .EXAMPLE
     Install-Font -Path font
     Install provided font in Windows.
     .EXAMPLE
+    Install-Font -Path font -Force
+    Install provided font in Windows and overwrittes a previously installed font (if exists).
+    .EXAMPLE
     Install-Font -Path folder
     Get all font files (recursively) from the specified folder and install in Windows.
+    .EXAMPLE
+    Install-Font -Path folder
+    Get all font files (recursively) from the specified folder and install in Windows overwritting prevosly installed fonts (if exists).
 #>
 param(
     [Parameter(Mandatory = $true)]
