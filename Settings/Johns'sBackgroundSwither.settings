@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <backgroundswitchersettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <schema>37</schema>
+  <schema>39</schema>
   <language_override />
   <check_for_updates>true</check_for_updates>
   <display_mode>polaroidpile</display_mode>
@@ -142,6 +142,7 @@
   <onedrive_access_token />
   <google_access_token />
   <google_year_ago_offset_days>7</google_year_ago_offset_days>
+  <google_fall_back_to_file_name_for_title>false</google_fall_back_to_file_name_for_title>
   <programs_to_stop_switching_for />
   <watch_folders_to_ignore />
   <picture_lists />
