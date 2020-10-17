@@ -1,0 +1,5 @@
+UnityGlass
+
+lperezperez@gmail.com
+
+Based on GNOME Unity UI and ENCMY 14 skin by danlosant (http://danlosant.deviantart.com)
